@@ -7,6 +7,7 @@ from SinGAN.customFuncs import *
 
 
 if __name__ == '__main__':
+    #torch.autograd.set_detect_anomaly(True)
     parser = get_arguments()
     parser.add_argument('--input_dir', help='input image dir', default='Input/Images3D/')
     parser.add_argument('--input_name', help='training image name', default="33039_LR.png")#required=True)
