@@ -112,15 +112,15 @@ def get3DPyramid(real,reals,opt):
 def norm01(num):
     return (num+1)/(2)
     
-def visualizeVolume(tensor):
-    tmp = tensor[0][0][:][:][:].clone()
-    for i in range(0, tensor.shape[2]):
-        for j in range(0, tensor.shape[3]):
-            for k in range(0, tensor.shape[4]):
-                tmp[i][j][k] = tensor[0][0][i][j][k] < 0
+def visualizeVolume(tensor, title=None):
+    voxels = tensor[0][0][:][:][:] < 0
+    edited = tensor[0][0][:][:][:] == 0 # Highlight zero values
     fig = plt.figure()
+    if title is not None: 
+        fig.canvas.set_window_title(title)
     ax = fig.gca(projection='3d')
-    ax.voxels(tmp, edgecolor='k')
+    ax.voxels(voxels, edgecolor='k')
+    ax.voxels(edited, facecolors='r', edgecolor='k')
     plt.show()
     
 def save3DFig(tensor, file):
