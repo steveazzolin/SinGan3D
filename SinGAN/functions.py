@@ -4,6 +4,7 @@ import matplotlib.patches as patches
 import numpy as np
 import torch.nn as nn
 import scipy.io as sio
+from scipy import ndimage
 import math
 from skimage import io as img
 from skimage import color, morphology, filters
@@ -11,6 +12,7 @@ from skimage import color, morphology, filters
 #from skimage import filters
 from SinGAN.imresize import imresize
 from SinGAN.imresize import imresize3D
+import SinGAN.customFuncs as customFuncs
 import os
 import random
 from sklearn.cluster import KMeans
@@ -190,6 +192,14 @@ def read_image_dir(dir,opt):
     x = img.imread('%s' % (dir))
     x = np2torch(x,opt)
     x = x[:,0:3,:,:]
+    return x
+
+def read_image_dir3D(dir,opt):
+    x = torch.load('%s' % (dir))
+    if not(opt.not_cuda):
+        x = move_to_gpu(x)
+    x = x.type(torch.cuda.FloatTensor) if not(opt.not_cuda) else x.type(torch.FloatTensor)
+    x = norm(x)
     return x
 
 def np2torch(x,opt):
@@ -394,4 +404,25 @@ def dilate_mask(mask,opt):
     mask = (mask-mask.min())/(mask.max()-mask.min())
     return mask
 
+def dilate_mask3D(mask, opt, debug=False):
+    if opt.mode != "editing":
+        raise ValueError("Mask dilation for this task not implemented")
+    if debug: 
+        tmp = torch.zeros(mask.shape)
+        tmp[0,0,20,20:30,20] = 1
+        customFuncs.visualizeMask(tmp, "My viz func")
+    else:
+        tmp = mask.cpu()
+    
+    element = ndimage.iterate_structure(ndimage.generate_binary_structure(3, 1), 7)
+    tmp = ndimage.binary_dilation(tmp.squeeze(0).squeeze(0), element)
+    
+    tmp2 = torch.zeros(mask.squeeze(0).squeeze(0).shape)
+    tmp2[tmp == True] = 1 #-1
+    if debug: customFuncs.visualizeMask(tmp2, "After dilation")
+    tmp = ndimage.gaussian_filter(tmp2, sigma=1)
+    if debug: customFuncs.visualizeMask(tmp, "Dilation after gaussian");  print("Min and max values of the mask:", min(tmp.flatten()), max(tmp.flatten()))
+
+    #mask = (mask-mask.min())/(mask.max()-mask.min())  mask should be already between 0 and 1
+    return mask if opt.not_cuda else move_to_gpu(mask)
 

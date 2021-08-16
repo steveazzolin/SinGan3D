@@ -4,6 +4,23 @@ import torch.nn as nn
 import SinGAN.customFuncs as customFuncs
 from argparse import ArgumentParser
 
+def visualizeMask(tensor, title=None):
+    import matplotlib.pyplot as plt
+    if len(tensor.shape) == 5:
+        voxels = tensor[0][0][:][:][:]
+        less_than_one = torch.logical_and(voxels < 1, voxels > 0)
+    else:
+        voxels = tensor[:][:][:]
+        less_than_one = np.logical_and(voxels < 1, voxels > 0)
+    ones = voxels == 1
+    fig = plt.figure()
+    if title is not None: 
+        fig.canvas.set_window_title(title)
+    ax = fig.gca(projection='3d')
+    ax.voxels(ones, edgecolor='k')
+    ax.voxels(less_than_one, edgecolor='r')
+    plt.show()
+
 parser = ArgumentParser()
 parser.add_argument('--input_dir', help='input image dir', default='Input/Images3D/')
 parser.add_argument('--input_name', help='input fig', default='spyrals.pt')
@@ -37,7 +54,8 @@ edited[edited == 0] = -1
 
 # Compute mask
 mask = torch.zeros_like(edited)
-mask[wnd] = 1
+mask[0, 0, wnd_to[0], wnd_to[1], wnd_to[2]] = 1
+customFuncs.visualizeMask(mask, title="Mask")
 
 # Save result
 torch.save(edited, outputDir+fileName+'.pt')

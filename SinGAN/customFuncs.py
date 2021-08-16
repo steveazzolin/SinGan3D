@@ -122,6 +122,22 @@ def visualizeVolume(tensor, title=None):
     ax.voxels(voxels, edgecolor='k')
     ax.voxels(edited, facecolors='r', edgecolor='k')
     plt.show()
+
+def visualizeMask(tensor, title=None):
+    if len(tensor.shape) == 5:
+        voxels = tensor[0][0][:][:][:]
+        less_than_one = torch.logical_and(voxels < 1, voxels > 0)
+    else:
+        voxels = tensor[:][:][:]
+        less_than_one = np.logical_and(voxels < 1, voxels > 0)
+    ones = voxels == 1
+    fig = plt.figure()
+    if title is not None: 
+        fig.canvas.set_window_title(title)
+    ax = fig.gca(projection='3d')
+    ax.voxels(ones, edgecolor='k')
+    ax.voxels(less_than_one, edgecolor='r')
+    plt.show()
     
 def save3DFig(tensor, file):
     torch.save(tensor, file)

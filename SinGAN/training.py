@@ -34,6 +34,7 @@ def train(opt,Gs,Zs,reals,NoiseAmp):
     reals3D = customFuncs.get3DPyramid(real3D,reals,opt)
     nfc_prev = 0
 
+    print("Total number of scales for training = ", opt.stop_scale+1)
     while scale_num<opt.stop_scale+1:
         opt.nfc = min(opt.nfc_init * pow(2, math.floor(scale_num / 4)), 128)
         opt.min_nfc = min(opt.min_nfc_init * pow(2, math.floor(scale_num / 4)), 128)

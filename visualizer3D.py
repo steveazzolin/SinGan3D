@@ -19,6 +19,7 @@ pathName = opt.input_name
 #completeName = 'Output/SR/2.0/'
 completeName = 'Input/Images3D/'
 completeName = 'Input/Editing3D/'
+completeName = 'Output/Editing/spyral/spyral_out/'
 #completeName = 'Evaluation/JSONVoxels/'
 #onlyfiles = [f for f in listdir(completeName) if isfile(join(completeName, f))]
 #for file in onlyfiles:
