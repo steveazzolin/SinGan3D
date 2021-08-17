@@ -24,12 +24,13 @@ def read_image(opt):
     x = img.imread('%s%s' % (opt.input_img,opt.ref_image))
     return np2torch(x)
 
-def read_image3D(opt):
+def read_image3D(opt, is_mask=False):
     x = torch.load('%s%s' % (opt.input_dir,opt.input_name))
     if not(opt.not_cuda):
         x = move_to_gpu(x)
     x = x.type(torch.cuda.FloatTensor) if not(opt.not_cuda) else x.type(torch.FloatTensor)
-    x = norm(x)
+    if not is_mask:
+        x = norm(x)
     return x
 
 def denorm(x):
@@ -194,12 +195,13 @@ def read_image_dir(dir,opt):
     x = x[:,0:3,:,:]
     return x
 
-def read_image_dir3D(dir,opt):
+def read_image_dir3D(dir,opt, is_mask=False):
     x = torch.load('%s' % (dir))
     if not(opt.not_cuda):
         x = move_to_gpu(x)
     x = x.type(torch.cuda.FloatTensor) if not(opt.not_cuda) else x.type(torch.FloatTensor)
-    x = norm(x)
+    if not is_mask:
+        x = norm(x)
     return x
 
 def np2torch(x,opt):
@@ -408,21 +410,23 @@ def dilate_mask3D(mask, opt, debug=False):
     if opt.mode != "editing":
         raise ValueError("Mask dilation for this task not implemented")
     if debug: 
-        tmp = torch.zeros(mask.shape)
-        tmp[0,0,20,20:30,20] = 1
-        customFuncs.visualizeMask(tmp, "My viz func")
+        #tmp = torch.zeros(mask.shape)
+        #wnd = (slice(17, 30), slice(28, 40), slice(15, 35))
+        #tmp[0,0,wnd[0], wnd[1], wnd[2]] = 1
+        tmp = mask.cpu()
+        customFuncs.visualizeMask(tmp, "Original mask")
     else:
         tmp = mask.cpu()
     
-    element = ndimage.iterate_structure(ndimage.generate_binary_structure(3, 1), 7)
+    element = ndimage.iterate_structure(ndimage.generate_binary_structure(3, 1), 3)
     tmp = ndimage.binary_dilation(tmp.squeeze(0).squeeze(0), element)
     
     tmp2 = torch.zeros(mask.squeeze(0).squeeze(0).shape)
     tmp2[tmp == True] = 1 #-1
     if debug: customFuncs.visualizeMask(tmp2, "After dilation")
-    tmp = ndimage.gaussian_filter(tmp2, sigma=1)
+    tmp = ndimage.gaussian_filter(tmp2, sigma=0.2)
     if debug: customFuncs.visualizeMask(tmp, "Dilation after gaussian");  print("Min and max values of the mask:", min(tmp.flatten()), max(tmp.flatten()))
 
-    #mask = (mask-mask.min())/(mask.max()-mask.min())  mask should be already between 0 and 1
+    #mask = (mask-mask.min())/(mask.max()-mask.min())  #mask should be already between 0 and 1
     return mask if opt.not_cuda else move_to_gpu(mask)
 

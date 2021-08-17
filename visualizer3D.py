@@ -18,7 +18,7 @@ pathName = opt.input_name
 #completeName = 'Output/RandomSamples/'+pathName+'/gen_start_scale=0/'
 #completeName = 'Output/SR/2.0/'
 completeName = 'Input/Images3D/'
-completeName = 'Input/Editing3D/'
+#completeName = 'Input/Editing3D/'
 completeName = 'Output/Editing/spyral/spyral_out/'
 #completeName = 'Evaluation/JSONVoxels/'
 #onlyfiles = [f for f in listdir(completeName) if isfile(join(completeName, f))]
@@ -26,4 +26,4 @@ completeName = 'Output/Editing/spyral/spyral_out/'
 file = pathName
 tensor = torch.load(completeName+file)
 print(tensor.shape)
-customFuncs.visualizeVolume(tensor)
+customFuncs.visualizeVolume(tensor, title=pathName)

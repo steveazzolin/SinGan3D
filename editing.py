@@ -37,7 +37,7 @@ if __name__ == '__main__':
             print("injection scale should be between 1 and %d" % (len(Gs)-1))
         else:
             ref = functions.read_image_dir3D('%s/%s' % (opt.ref_dir, opt.ref_name), opt) #1x1x40x40x40 for spyrals
-            mask = functions.read_image_dir3D('%s/%s_mask%s' % (opt.ref_dir,opt.ref_name[:-3],opt.ref_name[-3:]), opt)
+            mask = functions.read_image_dir3D('%s/%s_mask%s' % (opt.ref_dir,opt.ref_name[:-3],opt.ref_name[-3:]), opt, is_mask=True)
             if ref.shape[3] != real.shape[3]:
                 '''
                 mask = imresize(mask, real.shape[3]/ref.shape[3], opt)
