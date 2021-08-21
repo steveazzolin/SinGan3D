@@ -112,7 +112,7 @@ def get3DPyramid(real,reals,opt):
 def norm01(num):
     return (num+1)/(2)
     
-def visualizeVolume(tensor, title=None):
+def visualizeVolume(tensor, title=None, show=True):
     voxels = tensor[0][0][:][:][:] < 0
     edited = tensor[0][0][:][:][:] == 0 # Highlight zero values
     fig = plt.figure()
@@ -121,9 +121,10 @@ def visualizeVolume(tensor, title=None):
     ax = fig.gca(projection='3d')
     ax.voxels(voxels, edgecolor='k', linewidths=.3)
     ax.voxels(edited, facecolors='r', edgecolor='k', linewidths=.3)
-    plt.show()
+    if show: 
+        plt.show()
 
-def visualizeMask(tensor, title=None):
+def visualizeMask(tensor, title=None, show=True):
     if len(tensor.shape) == 5:
         voxels = tensor[0][0][:][:][:]
         less_than_one = torch.logical_and(voxels < 1, voxels > 0)
@@ -137,7 +138,8 @@ def visualizeMask(tensor, title=None):
     ax = fig.gca(projection='3d')
     ax.voxels(ones, edgecolor='k', linewidths=.3)
     ax.voxels(less_than_one, edgecolor='r', linewidths=.3)
-    plt.show()
+    if show:
+        plt.show()
     
 def save3DFig(tensor, file):
     torch.save(tensor, file)
