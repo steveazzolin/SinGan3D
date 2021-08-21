@@ -119,8 +119,8 @@ def visualizeVolume(tensor, title=None):
     if title is not None: 
         fig.canvas.set_window_title(title)
     ax = fig.gca(projection='3d')
-    ax.voxels(voxels, edgecolor='k')
-    ax.voxels(edited, facecolors='r', edgecolor='k')
+    ax.voxels(voxels, edgecolor='k', linewidths=.3)
+    ax.voxels(edited, facecolors='r', edgecolor='k', linewidths=.3)
     plt.show()
 
 def visualizeMask(tensor, title=None):
@@ -135,8 +135,8 @@ def visualizeMask(tensor, title=None):
     if title is not None: 
         fig.canvas.set_window_title(title)
     ax = fig.gca(projection='3d')
-    ax.voxels(ones, edgecolor='k')
-    ax.voxels(less_than_one, edgecolor='r')
+    ax.voxels(ones, edgecolor='k', linewidths=.3)
+    ax.voxels(less_than_one, edgecolor='r', linewidths=.3)
     plt.show()
     
 def save3DFig(tensor, file):
