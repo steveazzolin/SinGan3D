@@ -7,6 +7,7 @@ import SinGAN.functions as functions
 
 
 if __name__ == '__main__':
+    torch.cuda.set_per_process_memory_fraction(0.3)
     parser = get_arguments()
     parser.add_argument('--input_dir', help='input image dir', default='Input/Images3D/')
     parser.add_argument('--input_name', help='training image name', required=True)
@@ -60,7 +61,10 @@ if __name__ == '__main__':
             in_s = imresize3D(in_s, 1 / opt.scale_factor, opt)
             in_s = in_s[:, :, :reals[n].shape[-3], :reals[n].shape[-2], :reals[n].shape[-1]]
             out = SinGAN_generate(Gs[n:], Zs[n:], reals, NoiseAmp[n:], opt, in_s, n=n, num_samples=1)
-            torch.save(out, '%s/start_scale=%d.pt' % (dir2save, opt.editing_start_scale))
+            if out.shape[-1] != mask.shape[-1]:
+                print(f'Upsampling output from {out.shape} to {mask.shape}')
+                out = torch.nn.functional.upsample(out, size=mask.shape)
+            torch.save(out, '%s/start_scale=%d.pt' % (dir2save, opt.editing_start_scale)) 
             out = (1-mask)*real+mask*out
             torch.save(out, '%s/start_scale=%d_masked.pt' % (dir2save, opt.editing_start_scale))
 
