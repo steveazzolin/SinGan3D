@@ -25,9 +25,14 @@ mode = 'editing'
 wnd = (slice(30, 70), slice(50, 74), slice(40, 70)) 
 translation = (10, -50, 6) # Translation vector, used only in editing 
 '''
+'''
 # for simpleforest_80.pt
 wnd = (slice(60, 80), slice(34, 60), slice(0, 40)) # x, y, z
 translation = (-60, -34, 0) # Translation vector, used only in editing. Set to (0,0,0) to print the wnd selection
+'''
+# for simpleforest_80.pt
+wnd = (slice(65, 75), slice(35, 50), slice(15, 35)) # x, y, z
+translation = (-55, -15, 36) # Translation vector, used only in editing. Set to (0,0,0) to print the wnd selection
 
 if mode == 'editing': # Move voxels to another location
     wnd_to = tuple([slice(max(s.start + d, 0), s.stop + d) for s, d in zip(wnd, translation)]) # Compute target window by applying the translation vector to end

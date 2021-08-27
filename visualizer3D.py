@@ -13,13 +13,13 @@ from os.path import isfile, join
 
 parser = ArgumentParser()
 parser.add_argument('--input_name', help='input fig', default='start_scale=3_masked.pt')
-parser.add_argument('--input_dir', help='input img dir', default='Output/Editing/simpleforest_8/simpleforest2_8_out/')
+parser.add_argument('--input_dir', help='input img dir', default='Output/Editing/simpleforest_8/simpleforest_high_8_out/')
 opt = parser.parse_args()
 #completeName = 'Output/RandomSamples/'+pathName+'/gen_start_scale=0/'
 #completeName = 'Output/SR/2.0/'
-completeName = 'Input/Images3D/'
+#completeName = 'Input/Images3D/'
 #completeName = 'Input/Editing3D/'
-completeName = 'Output/Editing/spyral/spyral_out/'
+#completeName = 'Output/Editing/spyral/spyral_out/'
 #completeName = 'Evaluation/JSONVoxels/'
 #onlyfiles = [f for f in listdir(completeName) if isfile(join(completeName, f))]
 #for file in onlyfiles:
